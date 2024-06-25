@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание занятий</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card-header {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Расписание занятий</h1>
+        <div id="schedule"></div>
+    </div>
+
+    <script>
+        // Sample JSON data
+        const classData = [
+            {
+                "id": 1,
+                "title": "Йога",
+                "time": "08:00 - 09:00",
+                "maxParticipants": 10,
+                "currentParticipants": 7
+            },
+            {
+                "id": 2,
+                "title": "Пилатес",
+                "time": "09:30 - 10:30",
+                "maxParticipants": 8,
+                "currentParticipants": 8
+            },
+            {
+                "id": 3,
+                "title": "Силовая тренировка",
+                "time": "11:00 - 12:00",
+                "maxParticipants": 15,
+                "currentParticipants": 12
+            }
+        ];
+
+        const scheduleContainer = document.getElementById('schedule');
+
+        function renderClasses() {
+            scheduleContainer.innerHTML = '';
+            classData.forEach(classItem => {
+                const isFull = classItem.currentParticipants >= classItem.maxParticipants;
+                scheduleContainer.innerHTML += `
+                    <div class="card mb-3">
+                        <div class="card-header">${classItem.title}</div>
+                        <div class="card-body">
+                            <p>Время: ${classItem.time}</p>
+                            <p>Максимальное количество участников: ${classItem.maxParticipants}</p>
+                            <p>Текущее количество участников: ${classItem.currentParticipants}</p>
+                            <button class="btn btn-primary" onclick="enroll(${classItem.id})" ${isFull ? 'disabled' : ''}>Записаться</button>
+                            <button class="btn btn-danger" onclick="unenroll(${classItem.id})" ${classItem.currentParticipants === 0 ? 'disabled' : ''}>Отменить запись</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function enroll(classId) {
+            const classItem = classData.find(c => c.id === classId);
+            if (classItem && classItem.currentParticipants < classItem.maxParticipants) {
+                classItem.currentParticipants += 1;
+                renderClasses();
+            }
+        }
+
+        function unenroll(classId) {
+            const classItem = classData.find(c => c.id === classId);
+            if (classItem && classItem.currentParticipants > 0) {
+                classItem.currentParticipants -= 1;
+                renderClasses();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderClasses();
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
